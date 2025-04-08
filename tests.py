@@ -1,3 +1,8 @@
+import pytest
+from main import BooksCollector
+from data import *
+
+
 class TestBooksCollector:
 
     def test_books_genre_is_empty_true(self, book):
@@ -19,13 +24,20 @@ class TestBooksCollector:
         new_book = book.books_genre.get(BOOK_TITLE_1)
         assert  new_book == ''
 
-    def test_add_new_book_added_two_books_len_true(self, book):
-        book.add_new_book(BOOK_TITLE_1)
-        book.add_new_book(BOOK_TITLE_2)
-        two_books = book.books_genre
-        assert len(two_books) == 2
+    @pytest.mark.parametrize('name, book_count',
+        [
+            ([], 0),
+            ([BOOK_TITLE_1], 1),
+            ([BOOK_TITLE_1, BOOK_TITLE_2], 2),
+        ]
+    )
+    def test_add_new_book_length_true(self, book, name, book_count):
+        for book_name in name:
+           book.add_new_book(book_name)
+        books = book.books_genre
+        assert len(books) == book_count
 
-    def test_add_book_genre_set_up_book_genre_true(self, book):
+    def test_add_book_genre_true(self, book):
         book.add_new_book(BOOK_TITLE_1)
         book.books_genre[BOOK_TITLE_1] = GENRE
         new_book_genre = book.books_genre[BOOK_TITLE_1]
@@ -67,6 +79,20 @@ class TestBooksCollector:
         book.delete_book_from_favorites(BOOK_TITLE_1)
         favorites = book.get_list_of_favorites_books()
         assert len(favorites) == 0
+
+    @pytest.mark.parametrize('name, book_count',
+                             [
+                                 ([], 0),
+                                 ([BOOK_TITLE_1], 1),
+                                 ([BOOK_TITLE_1, BOOK_TITLE_2], 2),
+                             ]
+                             )
+    def test_get_list_of_favorites_books_length(self, book, name, book_count):
+        for book_name in name:
+            book.add_new_book(book_name)
+            book.add_book_in_favorites(book_name)
+        favorites = book.get_list_of_favorites_books()
+        assert len(favorites) == book_count
 
     def test_get_list_of_favorites_books_true(self, book):
         book.add_new_book(BOOK_TITLE_1)
