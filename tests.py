@@ -5,11 +5,11 @@ from data import *
 
 class TestBooksCollector:
 
-    def test_books_genre_is_empty_true(self, book):
-        assert len(book.books_genre) == 0
+    def test_books_genre_true(self, book):
+        assert book.books_genre == {}
 
-    def test_favorites_is_empty_true(self, book):
-        assert len(book.favorites) == 0
+    def test_favorites_true(self, book):
+        assert book.favorites == []
 
     def test_genre_is_actual_true(self, book):
         book_genre = book.genre
@@ -21,8 +21,8 @@ class TestBooksCollector:
 
     def test_add_new_book_added_one_book_true(self, book):
         book.add_new_book(BOOK_TITLE_1)
-        new_book = book.books_genre.get(BOOK_TITLE_1)
-        assert  new_book == ''
+        new_book = list(book.books_genre)[0]
+        assert  new_book == BOOK_TITLE_1
 
     @pytest.mark.parametrize('name, book_count',
         [
@@ -37,23 +37,27 @@ class TestBooksCollector:
         books = book.books_genre
         assert len(books) == book_count
 
-    def test_add_book_genre_true(self, book):
+    def test_set_book_genre_true(self, book):
         book.add_new_book(BOOK_TITLE_1)
         book.books_genre[BOOK_TITLE_1] = GENRE
-        new_book_genre = book.books_genre[BOOK_TITLE_1]
+        new_book_genre = list(book.books_genre.values())[0]
         assert  new_book_genre == GENRE
 
     def test_get_book_genre_true(self, book):
         book.add_new_book(BOOK_TITLE_1)
         book.books_genre[BOOK_TITLE_1] = GENRE
-        show_book_genre = book.books_genre.get(BOOK_TITLE_1)
+        show_book_genre = book.get_book_genre(BOOK_TITLE_1)
         assert  show_book_genre == GENRE
 
     def test_get_books_with_specific_genre_true(self, book):
-        book.add_new_book(BOOK_TITLE_1)
-        book.books_genre[BOOK_TITLE_1] = GENRE
+        for book_f in BOOKS_TITLE_FANTASY:
+            book.add_new_book(book_f)
+            book.books_genre[book_f] = GENRE
+        for book_d in BOOKS_TITLE_DETECTIVE:
+            book.add_new_book(book_d)
+            book.books_genre[book_d] = GENRE_DETECTIVE
         books_with_specific_genre = book.get_books_with_specific_genre(GENRE)
-        assert books_with_specific_genre == [BOOK_TITLE_1]
+        assert books_with_specific_genre == BOOKS_TITLE_FANTASY
 
     def test_get_books_genre_true(self, book):
         book.add_new_book(BOOK_TITLE_1)

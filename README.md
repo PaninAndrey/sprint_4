@@ -1,13 +1,13 @@
 # qa_python
 Ð
 The project has implemented 15 tests to verify the methods of the class BooksCollector.
-1.test_books_genre_is_empty_true
-2.test_favorites_is_empty_true
+1.test_books_genre_true
+2.test_favorites_true
 3.test_genre_is_actual_true
 4.test_genre_age_rating_is_actual_true
 5.test_add_new_book_added_one_book_true
 6.test_add_new_book_length_true
-7.test_add_book_genre_true
+7.test_set_book_genre_true
 8.test_get_book_genre_true
 9.test_get_books_with_specific_genre_true
 10.test_get_books_genre_true
