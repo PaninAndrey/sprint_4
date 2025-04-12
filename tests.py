@@ -39,7 +39,7 @@ class TestBooksCollector:
 
     def test_set_book_genre_true(self, book):
         book.add_new_book(BOOK_TITLE_1)
-        book.books_genre[BOOK_TITLE_1] = GENRE
+        book.set_book_genre(BOOK_TITLE_1, GENRE)
         new_book_genre = list(book.books_genre.values())[0]
         assert  new_book_genre == GENRE
 
