@@ -1,24 +1,105 @@
+import pytest
 from main import BooksCollector
+from data import *
 
-# класс TestBooksCollector объединяет набор тестов, которыми мы покрываем наше приложение BooksCollector
-# обязательно указывать префикс Test
+
 class TestBooksCollector:
 
-    # пример теста:
-    # обязательно указывать префикс test_
-    # дальше идет название метода, который тестируем add_new_book_
-    # затем, что тестируем add_two_books - добавление двух книг
-    def test_add_new_book_add_two_books(self):
-        # создаем экземпляр (объект) класса BooksCollector
-        collector = BooksCollector()
+    def test_books_genre_true(self, book):
+        assert book.books_genre == {}
 
-        # добавляем две книги
-        collector.add_new_book('Гордость и предубеждение и зомби')
-        collector.add_new_book('Что делать, если ваш кот хочет вас убить')
+    def test_favorites_true(self, book):
+        assert book.favorites == []
 
-        # проверяем, что добавилось именно две
-        # словарь books_rating, который нам возвращает метод get_books_rating, имеет длину 2
-        assert len(collector.get_books_rating()) == 2
+    def test_genre_is_actual_true(self, book):
+        book_genre = book.genre
+        assert book_genre == genre
 
-    # напиши свои тесты ниже
-    # чтобы тесты были независимыми в каждом из них создавай отдельный экземпляр класса BooksCollector()
+    def test_genre_age_rating_is_actual_true(self, book):
+        book_for_kids = book.genre_age_rating
+        assert  book_for_kids == genre_age_rating
+
+    def test_add_new_book_added_one_book_true(self, book):
+        book.add_new_book(BOOK_TITLE_1)
+        new_book = list(book.books_genre)[0]
+        assert  new_book == BOOK_TITLE_1
+
+    @pytest.mark.parametrize('name, book_count',
+        [
+            ([], 0),
+            ([BOOK_TITLE_1], 1),
+            ([BOOK_TITLE_1, BOOK_TITLE_2], 2),
+        ]
+    )
+    def test_add_new_book_length_true(self, book, name, book_count):
+        for book_name in name:
+           book.add_new_book(book_name)
+        books = book.books_genre
+        assert len(books) == book_count
+
+    def test_set_book_genre_true(self, book):
+        book.add_new_book(BOOK_TITLE_1)
+        book.set_book_genre(BOOK_TITLE_1, GENRE)
+        new_book_genre = list(book.books_genre.values())[0]
+        assert  new_book_genre == GENRE
+
+    def test_get_book_genre_true(self, book):
+        book.add_new_book(BOOK_TITLE_1)
+        book.books_genre[BOOK_TITLE_1] = GENRE
+        show_book_genre = book.get_book_genre(BOOK_TITLE_1)
+        assert  show_book_genre == GENRE
+
+    def test_get_books_with_specific_genre_true(self, book):
+        for book_f in BOOKS_TITLE_FANTASY:
+            book.add_new_book(book_f)
+            book.books_genre[book_f] = GENRE
+        for book_d in BOOKS_TITLE_DETECTIVE:
+            book.add_new_book(book_d)
+            book.books_genre[book_d] = GENRE_DETECTIVE
+        books_with_specific_genre = book.get_books_with_specific_genre(GENRE)
+        assert books_with_specific_genre == BOOKS_TITLE_FANTASY
+
+    def test_get_books_genre_true(self, book):
+        book.add_new_book(BOOK_TITLE_1)
+        book.books_genre[BOOK_TITLE_1] = GENRE
+        show_books_genre = book.get_books_genre()
+        assert  show_books_genre == {BOOK_TITLE_1 : GENRE}
+
+    def test_get_books_for_children_true(self, book):
+        book.add_new_book(BOOK_TITLE_1)
+        book.books_genre[BOOK_TITLE_1] = GENRE
+        books_for_children = book.get_books_for_children()
+        assert  books_for_children == [BOOK_TITLE_1]
+
+    def test_add_book_in_favorites_true(self, book):
+        book.add_new_book(BOOK_TITLE_1)
+        book.add_book_in_favorites(BOOK_TITLE_1)
+        favorites = book.get_list_of_favorites_books()
+        assert BOOK_TITLE_1 in favorites
+
+    def test_delete_book_from_favorites_true(self, book):
+        book.add_new_book(BOOK_TITLE_1)
+        book.add_book_in_favorites(BOOK_TITLE_1)
+        book.delete_book_from_favorites(BOOK_TITLE_1)
+        favorites = book.get_list_of_favorites_books()
+        assert len(favorites) == 0
+
+    @pytest.mark.parametrize('name, book_count',
+                             [
+                                 ([], 0),
+                                 ([BOOK_TITLE_1], 1),
+                                 ([BOOK_TITLE_1, BOOK_TITLE_2], 2),
+                             ]
+                             )
+    def test_get_list_of_favorites_books_length(self, book, name, book_count):
+        for book_name in name:
+            book.add_new_book(book_name)
+            book.add_book_in_favorites(book_name)
+        favorites = book.get_list_of_favorites_books()
+        assert len(favorites) == book_count
+
+    def test_get_list_of_favorites_books_true(self, book):
+        book.add_new_book(BOOK_TITLE_1)
+        book.add_book_in_favorites(BOOK_TITLE_1)
+        favorites = book.get_list_of_favorites_books()
+        assert favorites == [BOOK_TITLE_1]
